@@ -74,8 +74,12 @@ async function getUploadStatus(
   sessionId: string,
   options?: TransportOptions,
 ): Promise<UploadStatusResponse> {
-  const response = await getFetch(options)(
-    `${getRelayUrl(options)}/sync/${encodeURIComponent(sessionId)}/upload-status`,
+  const response = await withRetry(
+    () =>
+      getFetch(options)(
+        `${getRelayUrl(options)}/sync/${encodeURIComponent(sessionId)}/upload-status`,
+      ),
+    options,
   );
 
   if (!response.ok) {

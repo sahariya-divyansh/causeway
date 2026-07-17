@@ -19,6 +19,9 @@ export interface BenchmarkResult {
   bytesTransferred: number;
   timeToConvergenceMs: number;
   converged: boolean;
+  errorMessage?: string;
+  relayRequests?: number;
+  relayElapsedMs?: number;
 }
 
 export function createScenario(): ScenarioEdit[] {
