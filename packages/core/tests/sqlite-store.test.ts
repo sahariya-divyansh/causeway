@@ -6,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { openStore } from "../src/sqlite-store.js";
-import type { SyncStore } from "../src/storage.js";
+import type { RemoteMergeStore, SyncStore } from "../src/storage.js";
 
 interface Invoice {
   status: string;
@@ -96,5 +96,39 @@ describe("better-sqlite3 SyncStore", () => {
       "invoice:2",
       "invoice:3",
     ]);
+  });
+
+  it("keeps local write vector clocks scoped to the written key history", () => {
+    const mergeStore = store as SyncStore<Invoice> & RemoteMergeStore<Invoice>;
+
+    vi.setSystemTime(1000);
+    mergeStore.applyRemoteState({
+      "invoice:remote-only": {
+        value: { status: "sent", amount: 900 },
+        timestamp: 1000,
+        vectorClock: { B: 1, C: 1 },
+        clientId: "B",
+      },
+    });
+
+    vi.setSystemTime(2000);
+    store.applyLocalWrite("invoice:local-only", { status: "draft", amount: 500 });
+
+    expect(store.getFullState()["invoice:local-only"].vectorClock).toEqual({ A: 1 });
+
+    vi.setSystemTime(3000);
+    mergeStore.applyRemoteState({
+      "invoice:shared": {
+        value: { status: "review", amount: 750 },
+        timestamp: 3000,
+        vectorClock: { B: 2 },
+        clientId: "B",
+      },
+    });
+
+    vi.setSystemTime(4000);
+    store.applyLocalWrite("invoice:shared", { status: "approved", amount: 750 });
+
+    expect(store.getFullState()["invoice:shared"].vectorClock).toEqual({ B: 2, A: 2 });
   });
 });

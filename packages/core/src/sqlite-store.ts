@@ -25,14 +25,17 @@ interface LogRow extends StateRow {
 class BetterSqliteSyncStore<T> implements SyncStore<T>, RemoteMergeStore<T> {
   private readonly db: Database.Database;
 
-  constructor(dbPath: string, private readonly clientId: string) {
+  constructor(
+    dbPath: string,
+    private readonly clientId: string,
+  ) {
     this.db = new Database(dbPath);
     this.db.pragma("journal_mode = WAL");
     this.createSchema();
   }
 
   applyLocalWrite(key: string, value: T): void {
-    const currentClock = this.getObservedClock();
+    const currentClock = this.getClockForLocalWrite(key);
     currentClock[this.clientId] = (currentClock[this.clientId] ?? 0) + 1;
 
     const entry: RegisterEntry<T> = {
@@ -47,7 +50,9 @@ class BetterSqliteSyncStore<T> implements SyncStore<T>, RemoteMergeStore<T> {
 
   getFullState(): Record<string, RegisterEntry<T>> {
     const rows = this.db
-      .prepare("SELECT key, value, timestamp, vector_clock, client_id FROM current_state ORDER BY key")
+      .prepare(
+        "SELECT key, value, timestamp, vector_clock, client_id FROM current_state ORDER BY key",
+      )
       .all() as StateRow[];
 
     return Object.fromEntries(rows.map((row) => [row.key, this.rowToEntry(row)]));
@@ -166,11 +171,20 @@ class BetterSqliteSyncStore<T> implements SyncStore<T>, RemoteMergeStore<T> {
     };
   }
 
-  private getObservedClock(): VectorClock {
-    return Object.values(this.getFullState()).reduce<VectorClock>(
-      (clock, entry) => mergeClocks(clock, entry.vectorClock),
-      {},
+  private getClockForLocalWrite(key: string): VectorClock {
+    const previous = this.db
+      .prepare(
+        "SELECT key, value, timestamp, vector_clock, client_id FROM current_state WHERE key = ?",
+      )
+      .get(key) as StateRow | undefined;
+    const clock = previous ? { ...this.rowToEntry(previous).vectorClock } : {};
+    const localCounter = Object.values(this.getFullState()).reduce(
+      (highest, entry) => Math.max(highest, entry.vectorClock[this.clientId] ?? 0),
+      0,
     );
+
+    clock[this.clientId] = Math.max(clock[this.clientId] ?? 0, localCounter);
+    return clock;
   }
 }
 
