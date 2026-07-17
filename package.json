@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build -w @setu/relay-server && npm run build -w @setu/core",
     "lint": "eslint .",
     "format": "prettier --check .",
-    "test": "npm run test --workspace @setu/core"
+    "test": "npm run test -w @setu/relay-server && npm run test -w @setu/core"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

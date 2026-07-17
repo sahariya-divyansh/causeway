@@ -15,6 +15,7 @@
     "cbor-x": "^1.6.0"
   },
   "devDependencies": {
+    "@setu/relay-server": "0.1.0",
     "@types/better-sqlite3": "^7.6.13"
   }
 }
