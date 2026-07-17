@@ -1,0 +1,21 @@
+{
+  "name": "@setu/bench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "bench:setu": "tsx src/run-setu.ts",
+    "bench:rxdb": "tsx src/run-rxdb.ts",
+    "bench:yjs": "tsx src/run-yjs.ts",
+    "bench:all": "tsx src/run-all.ts"
+  },
+  "dependencies": {
+    "@setu/core": "0.1.0",
+    "@setu/relay-server": "0.1.0"
+  },
+  "devDependencies": {
+    "rxdb": "^16.15.0",
+    "yjs": "^13.6.26"
+  }
+}

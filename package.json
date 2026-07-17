@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @setu/relay-server && npm run build -w @setu/core",
+    "build": "npm run build -w @setu/relay-server && npm run build -w @setu/core && npm run build -w @setu/bench",
     "lint": "eslint .",
     "format": "prettier --check .",
     "test": "npm run test -w @setu/relay-server && npm run test -w @setu/core"

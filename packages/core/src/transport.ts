@@ -3,10 +3,18 @@ export interface TransportOptions {
   fetchImpl?: typeof fetch;
   maxRetries?: number;
   initialBackoffMs?: number;
+  onUploadChunk?: (details: ChunkTransferDetails) => void;
+  onDownloadChunk?: (details: ChunkTransferDetails) => void;
 }
 
 interface UploadStatusResponse {
   receivedChunks: number[];
+}
+
+export interface ChunkTransferDetails {
+  sessionId: string;
+  chunkIndex: number;
+  bytes: number;
 }
 
 const defaultRelayUrl = "http://127.0.0.1:3000";
@@ -114,6 +122,12 @@ export async function uploadDelta(
       if (!response.ok) {
         throw new Error(`upload chunk ${chunkIndex} failed with HTTP ${response.status}`);
       }
+
+      options?.onUploadChunk?.({
+        sessionId,
+        chunkIndex,
+        bytes: chunk.byteLength,
+      });
     }, options);
   }
 }
@@ -159,7 +173,15 @@ export async function downloadDelta(
       }
 
       totalChunks = Number(totalChunksHeader);
-      return Buffer.from(await response.arrayBuffer());
+      const chunk = Buffer.from(await response.arrayBuffer());
+
+      options?.onDownloadChunk?.({
+        sessionId,
+        chunkIndex,
+        bytes: chunk.byteLength,
+      });
+
+      return chunk;
     }, options);
 
     chunks.push(chunk);
