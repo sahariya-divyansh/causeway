@@ -1,10 +1,32 @@
 {
   "name": "@setu/core",
   "version": "0.1.0",
-  "private": true,
+  "description": "Low-bandwidth offline-first sync core with CRDT storage, CBOR deltas, and resumable transport.",
   "type": "module",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist/src/crdt.*",
+    "dist/src/delta.*",
+    "dist/src/index.*",
+    "dist/src/sqlite-store.*",
+    "dist/src/storage.*",
+    "dist/src/transport.*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sahariya-divyansh/setu.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "crdt",
+    "offline-first",
+    "sync",
+    "low-bandwidth",
+    "cbor",
+    "sqlite"
+  ],
+  "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run --reporter verbose",

@@ -1,0 +1,9 @@
+src/
+tests/
+dist/tests/
+dist/src/bench-encoding.*
+tsconfig.json
+*.tsbuildinfo
+vitest.config.*
+coverage/
+node_modules/
