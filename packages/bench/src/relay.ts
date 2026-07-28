@@ -3,8 +3,8 @@ import type { AddressInfo } from "node:net";
 import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 
-import { downloadDelta, uploadDelta } from "@setu/core";
-import { createRelayServer } from "@setu/relay-server";
+import { downloadDelta, uploadDelta, DEFAULT_CHUNK_SIZE } from "@causeway-sync/core";
+import { createRelayServer } from "@causeway-sync/relay-server";
 
 export interface RelayExchangeResult {
   payload: Buffer;
@@ -42,7 +42,7 @@ export async function exchangeViaRelay(
   relayUrl: string,
   payload: Buffer,
   label: string,
-  chunkSize = 1024,
+  chunkSize = DEFAULT_CHUNK_SIZE,
 ): Promise<RelayExchangeResult> {
   const sessionId = `bench-${randomUUID()}-${label}`;
   let bytesTransferred = 0;

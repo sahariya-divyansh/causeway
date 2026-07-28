@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { openStore } from "../src/sqlite-store.js";
+import { computeDelta } from "../src/delta.js";
 import type { RemoteMergeStore, SyncStore } from "../src/storage.js";
 
 interface Invoice {
@@ -19,7 +20,7 @@ describe("better-sqlite3 SyncStore", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    dbPath = join(tmpdir(), `setu-core-${randomUUID()}.sqlite`);
+    dbPath = join(tmpdir(), `causeway-core-${randomUUID()}.sqlite`);
     store = openStore<Invoice>(dbPath, "A");
   });
 
@@ -130,5 +131,21 @@ describe("better-sqlite3 SyncStore", () => {
     store.applyLocalWrite("invoice:shared", { status: "approved", amount: 750 });
 
     expect(store.getFullState()["invoice:shared"].vectorClock).toEqual({ B: 2, A: 2 });
+  });
+
+  it("coalesces multiple writes to the same key in computeDelta", () => {
+    store.applyLocalWrite("invoice:1", { status: "draft", amount: 100 });
+    store.applyLocalWrite("invoice:1", { status: "review", amount: 200 });
+    store.applyLocalWrite("invoice:1", { status: "approved", amount: 300 });
+    store.applyLocalWrite("invoice:1", { status: "sent", amount: 400 });
+    store.applyLocalWrite("invoice:1", { status: "paid", amount: 500 });
+
+    const changes = store.getChangesSince(0);
+    expect(changes.length).toBe(5);
+
+    const delta = computeDelta(changes);
+    const keys = Object.keys(delta);
+    expect(keys).toEqual(["invoice:1"]);
+    expect(delta["invoice:1"].value).toEqual({ status: "paid", amount: 500 });
   });
 });

@@ -19,8 +19,15 @@ export interface ChunkTransferDetails {
 
 const defaultRelayUrl = "http://127.0.0.1:3000";
 
+export const DEFAULT_CHUNK_SIZE = 4096;
+
 function getRelayUrl(options?: TransportOptions): string {
-  return (options?.relayUrl ?? process.env.SETU_RELAY_URL ?? defaultRelayUrl).replace(/\/$/, "");
+  return (
+    options?.relayUrl ??
+    process.env.CAUSEWAY_RELAY_URL ??
+    process.env.SETU_RELAY_URL ??
+    defaultRelayUrl
+  ).replace(/\/$/, "");
 }
 
 function getFetch(options?: TransportOptions): typeof fetch {
@@ -92,7 +99,7 @@ async function getUploadStatus(
 export async function uploadDelta(
   sessionId: string,
   encodedDelta: Buffer,
-  chunkSize: number,
+  chunkSize: number = DEFAULT_CHUNK_SIZE,
   options?: TransportOptions,
 ): Promise<void> {
   const chunks = splitBuffer(encodedDelta, chunkSize);
@@ -138,7 +145,7 @@ export async function uploadDelta(
 
 export async function downloadDelta(
   sessionId: string,
-  chunkSize: number,
+  chunkSize: number = DEFAULT_CHUNK_SIZE,
   options?: TransportOptions,
 ): Promise<Buffer> {
   if (!Number.isInteger(chunkSize) || chunkSize <= 0) {

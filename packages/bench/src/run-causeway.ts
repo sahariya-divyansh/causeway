@@ -13,6 +13,7 @@ import {
   encodeDelta,
   openStore,
   uploadDelta,
+  DEFAULT_CHUNK_SIZE,
   type SyncStore,
 } from "@causeway-sync/core";
 
@@ -88,7 +89,7 @@ export async function runCausewayBenchmark(): Promise<BenchmarkResult> {
 
       const deltaFromA = encodeDelta(computeDelta(storeA.getChangesSince(0)));
       const deltaFromB = encodeDelta(computeDelta(storeB.getChangesSince(0)));
-      const chunkSize = 1024;
+      const chunkSize = Number(process.env.CAUSEWAY_CHUNK_SIZE || DEFAULT_CHUNK_SIZE);
       const trackBytes = ({ bytes }: { bytes: number }) => {
         bytesTransferred += bytes;
       };
