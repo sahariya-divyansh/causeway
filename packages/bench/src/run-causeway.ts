@@ -14,7 +14,7 @@ import {
   openStore,
   uploadDelta,
   type SyncStore,
-} from "@setu/core";
+} from "@causeway-sync/core";
 
 import { createScenario, type BenchmarkResult, type ScenarioValue } from "./scenario.js";
 import { withBenchmarkRelay } from "./relay.js";
@@ -56,9 +56,9 @@ function formatStateDiff<T>(
     .join("\n");
 }
 
-export async function runSetuBenchmark(): Promise<BenchmarkResult> {
-  const dbAPath = join(tmpdir(), `setu-bench-a-${randomUUID()}.sqlite`);
-  const dbBPath = join(tmpdir(), `setu-bench-b-${randomUUID()}.sqlite`);
+export async function runCausewayBenchmark(): Promise<BenchmarkResult> {
+  const dbAPath = join(tmpdir(), `causeway-bench-a-${randomUUID()}.sqlite`);
+  const dbBPath = join(tmpdir(), `causeway-bench-b-${randomUUID()}.sqlite`);
   const storeA: SyncStore<ScenarioValue> = openStore(dbAPath, "bench-a");
   const storeB: SyncStore<ScenarioValue> = openStore(dbBPath, "bench-b");
   let bytesTransferred = 0;
@@ -130,12 +130,12 @@ export async function runSetuBenchmark(): Promise<BenchmarkResult> {
 
       if (!converged) {
         throw new Error(
-          `Setu stores did not converge.\n${formatStateDiff(stateA, stateB) || "No differing keys found."}`,
+          `Causeway stores did not converge.\n${formatStateDiff(stateA, stateB) || "No differing keys found."}`,
         );
       }
 
       return {
-        engine: "Setu",
+        engine: "Causeway",
         bytesTransferred,
         timeToConvergenceMs,
         converged,
@@ -152,6 +152,6 @@ export async function runSetuBenchmark(): Promise<BenchmarkResult> {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const result = await runSetuBenchmark();
+  const result = await runCausewayBenchmark();
   console.log(result);
 }

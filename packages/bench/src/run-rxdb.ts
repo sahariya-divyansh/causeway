@@ -40,11 +40,11 @@ export async function runRxdbBenchmark(): Promise<BenchmarkResult> {
   const { createRxDatabase } = await import("rxdb");
   const { getRxStorageMemory } = await import("rxdb/plugins/storage-memory");
   const dbA = await createRxDatabase({
-    name: `setubenchrxdba${Date.now()}`,
+    name: `causewaybenchrxdba${Date.now()}`,
     storage: getRxStorageMemory(),
   });
   const dbB = await createRxDatabase({
-    name: `setubenchrxdbb${Date.now()}`,
+    name: `causewaybenchrxdbb${Date.now()}`,
     storage: getRxStorageMemory(),
   });
 
@@ -121,7 +121,7 @@ export async function runRxdbBenchmark(): Promise<BenchmarkResult> {
 
       // Caveat: RxDB's production replication plugins expect a replication endpoint
       // or storage-specific setup. This harness uses RxDB's document model, but sends
-      // JSON document states through the same HTTP relay as Setu so netem latency/loss
+      // JSON document states through the same HTTP relay as Causeway so netem latency/loss
       // applies. It still excludes RxDB checkpoint protocol overhead and live timers.
       const bytesTransferred = deliveredAToB.bytesTransferred + deliveredBToA.bytesTransferred;
       const relayRequests = deliveredAToB.relayRequests + deliveredBToA.relayRequests;

@@ -1,5 +1,5 @@
 {
-  "name": "@setu/core",
+  "name": "@causeway-sync/core",
   "version": "0.1.0",
   "description": "Low-bandwidth offline-first sync core with CRDT storage, CBOR deltas, and resumable transport.",
   "type": "module",
@@ -37,7 +37,7 @@
     "cbor-x": "^1.6.0"
   },
   "devDependencies": {
-    "@setu/relay-server": "0.1.0",
+    "@causeway-sync/relay-server": "0.1.0",
     "@types/better-sqlite3": "^7.6.13"
   }
 }

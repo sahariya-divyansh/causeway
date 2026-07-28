@@ -15,11 +15,11 @@ describe("LWWMap", () => {
     vi.setSystemTime(1000);
     const map = new LWWMap<string>("A");
 
-    map.set("name", "Setu");
+    map.set("name", "Causeway");
 
-    expect(map.get("name")).toBe("Setu");
+    expect(map.get("name")).toBe("Causeway");
     expect(map.getEntry("name")).toMatchObject({
-      value: "Setu",
+      value: "Causeway",
       timestamp: 1000,
       vectorClock: { A: 1 },
       clientId: "A",

@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @setu/relay-server && npm run build -w @setu/core && npm run build -w @setu/bench",
+    "build": "npm run build -w @causeway-sync/relay-server && npm run build -w @causeway-sync/core && npm run build -w @causeway-sync/bench",
     "lint": "eslint .",
     "format": "prettier --check .",
-    "test": "npm run test -w @setu/relay-server && npm run test -w @setu/core"
+    "test": "npm run test -w @causeway-sync/relay-server && npm run test -w @causeway-sync/core"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

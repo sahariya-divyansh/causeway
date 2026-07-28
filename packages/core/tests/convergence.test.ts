@@ -22,8 +22,8 @@ describe("store convergence over encoded deltas", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     dbPaths = [
-      join(tmpdir(), `setu-a-${randomUUID()}.sqlite`),
-      join(tmpdir(), `setu-b-${randomUUID()}.sqlite`),
+      join(tmpdir(), `causeway-a-${randomUUID()}.sqlite`),
+      join(tmpdir(), `causeway-b-${randomUUID()}.sqlite`),
     ];
     storeA = openStore<Task>(dbPaths[0], "A");
     storeB = openStore<Task>(dbPaths[1], "B");

@@ -1,5 +1,5 @@
 {
-  "name": "@setu/relay-server",
+  "name": "@causeway-sync/relay-server",
   "version": "0.1.0",
   "private": true,
   "type": "module",

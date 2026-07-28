@@ -5,7 +5,7 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { createRelayServer } from "@setu/relay-server";
+import { createRelayServer } from "@causeway-sync/relay-server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { applyRemoteDelta, computeDelta, encodeDelta } from "../src/delta.js";
@@ -29,8 +29,8 @@ describe("end-to-end two-client sync", () => {
   beforeEach(async () => {
     vi.useFakeTimers();
     dbPaths = [
-      join(tmpdir(), `setu-e2e-a-${randomUUID()}.sqlite`),
-      join(tmpdir(), `setu-e2e-b-${randomUUID()}.sqlite`),
+      join(tmpdir(), `causeway-e2e-a-${randomUUID()}.sqlite`),
+      join(tmpdir(), `causeway-e2e-b-${randomUUID()}.sqlite`),
     ];
     storeA = openStore<AppRecord>(dbPaths[0], "client-a");
     storeB = openStore<AppRecord>(dbPaths[1], "client-b");

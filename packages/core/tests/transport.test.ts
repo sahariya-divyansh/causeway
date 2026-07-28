@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 
-import { createRelayServer } from "@setu/relay-server";
+import { createRelayServer } from "@causeway-sync/relay-server";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { downloadDelta, uploadDelta } from "../src/transport.js";

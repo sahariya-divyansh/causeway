@@ -171,6 +171,6 @@ if (isDirectRun) {
   const port = Number(process.env.PORT ?? 3000);
   const server = createRelayServer().listen(port, () => {
     const address = server.address() as AddressInfo;
-    console.log(`setu relay server listening on http://127.0.0.1:${address.port}`);
+    console.log(`causeway relay server listening on http://127.0.0.1:${address.port}`);
   });
 }

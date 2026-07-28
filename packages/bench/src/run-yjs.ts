@@ -39,7 +39,7 @@ export async function runYjsBenchmark(): Promise<BenchmarkResult> {
     const stateB = stableStateJson(mapB.entries());
 
     // Caveat: this uses Yjs' native binary document update format, but transports it
-    // through Setu's HTTP relay rather than a Yjs provider. That makes the network
+    // through Causeway's HTTP relay rather than a Yjs provider. That makes the network
     // conditions real and identical, while excluding provider-specific awareness and
     // reconnect protocol overhead.
     return {

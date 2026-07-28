@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { runRxdbBenchmark } from "./run-rxdb.js";
-import { runSetuBenchmark } from "./run-setu.js";
+import { runCausewayBenchmark } from "./run-causeway.js";
 import { runYjsBenchmark } from "./run-yjs.js";
 import type { BenchmarkResult } from "./scenario.js";
 
@@ -26,7 +26,7 @@ function toMarkdown(results: BenchmarkResult[]): string {
 }
 
 export async function runAllBenchmarks(): Promise<string> {
-  const runners = [runSetuBenchmark, runRxdbBenchmark, runYjsBenchmark];
+  const runners = [runCausewayBenchmark, runRxdbBenchmark, runYjsBenchmark];
   const results: BenchmarkResult[] = [];
 
   for (const runner of runners) {
