@@ -10,7 +10,7 @@
     "build": "npm run build -w @causeway-sync/relay-server && npm run build -w @causeway-sync/core && npm run build -w @causeway-sync/bench",
     "lint": "eslint .",
     "format": "prettier --check .",
-    "test": "npm run test -w @causeway-sync/relay-server && npm run test -w @causeway-sync/core"
+    "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
