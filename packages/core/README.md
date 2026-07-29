@@ -112,7 +112,6 @@ The package code and local tests are cross-platform. The full netem-throttled co
 - No OR-Sets, RGAs, or collaborative text CRDTs in v1.
 - Single conflict strategy: vector clocks plus deterministic last-writer resolution.
 - Relay-based sync only, with no peer-to-peer transport.
-- Asynchronous Storage Mismatch: The core desktop store interface (`SyncStore`) is synchronous (due to `better-sqlite3`), while the modern mobile SQLite engine (`expo-sqlite`) is asynchronous. In v1, this interface difference is resolved by using a separate `AsyncSyncStore` interface for the mobile package to avoid extensive and risky refactoring of the core desktop package and its tests.
 - Remaining wire-format optimizations, including clientId interning and per-key dotted vector clocks, were identified but deliberately deferred as v2 work rather than expanding the v1 scope.
 
 ## Resources/Credits

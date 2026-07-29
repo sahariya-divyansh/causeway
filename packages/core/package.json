@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sahariya-divyansh/setu.git",
+    "url": "git+https://github.com/sahariya-divyansh/causeway.git",
     "directory": "packages/core"
   },
   "keywords": [
