@@ -44,17 +44,21 @@ Causeway uses resumable HTTP chunk requests rather than WebSockets. In the targe
 
 ## Benchmark Results
 
-Scenario: 50 concurrent edits split across 2 clients, synced through a relay server, under simulated rural 2G conditions using Linux `tc/netem`: 20kbps rate, 800ms delay, 10% packet loss. Causeway was compared against RxDB and Yjs performing the equivalent sync over the same relay and network conditions. Results are averaged across 4 runs.
+Scenario: 50 concurrent edits split across 2 clients, synced through a relay server, under simulated rural 2G conditions (Linux `tc/netem`: 20kbps rate, 800ms delay, 10% packet loss). Causeway was compared against RxDB and Yjs performing the equivalent sync over the same relay and network conditions. Results are averaged across 6 runs.
 
 | Engine | Bytes Transferred | Avg Time to Convergence |
-| ------ | ----------------: | ----------------------: |
-| Causeway |             9,738 |                  ~70.1s |
-| RxDB   |            12,722 |                  ~94.7s |
-| Yjs    |            11,254 |                  ~69.2s |
+|---|---:|---:|
+| Causeway | 8,302 | ~33.2s |
+| RxDB | 12,722 | ~33.0s |
+| Yjs | 11,254 | ~31.0s |
 
-Causeway transferred the smallest payload of the three: 13.5% smaller than Yjs and 23.5% smaller than RxDB. Byte counts were deterministic run-to-run across all 4 runs.
+Causeway transferred the smallest payload of the three, consistently across all 6 runs with zero variance in byte count (8,302 bytes every single run) — 26% smaller than Yjs and 35% smaller than RxDB. Time-to-convergence was statistically indistinguishable across all three engines, within about 7% of each other on average, with each engine winning multiple individual runs. At only 6 relay round trips per sync (after the chunk-size optimization reduced round trips from 14 to 6), a single packet-loss retry has an outsized effect on total wall-clock time, so time-to-convergence at this round-trip count is dominated by network-level randomness rather than by engine efficiency. Payload size remains the meaningful, reproducible differentiator.
 
-Convergence time was a statistical tie with Yjs, within about 1% on average, with each engine winning some individual runs. Causeway was consistently about 26% faster than RxDB across every run, with no overlap.
+## Wire Format & Transport Optimization
+
+- **Client-ID interning**: Vector clocks and entry metadata previously repeated full clientId strings. Now, clientIds are interned to short indices per sync session, with the mapping exchanged compactly so the receiving side can resolve them. This cut the per-entry encoded size from 843 bytes to 629 bytes for a 10-entry delta payload (a 25.4% reduction).
+- **Chunk size tuning**: Default chunk size was increased to 4,096 bytes after modeling the round-trip-vs-retry-cost tradeoff at the benchmarked network profile (20kbps/800ms/10% loss). This let most real delta payloads fit in a single chunk, cutting relay round trips from 14 to 6 for a typical sync, which is what most directly affected wall-clock time for all three engines benchmarked (as chunking is a property of the shared relay/transport harness, not Causeway specifically).
+- **Write coalescing**: Confirmed that `computeDelta` only includes the latest value per key. This was already correctly implemented in the core sync engine, which has now been verified and covered by a new explicit unit test.
 
 ## The Optimization Story
 
@@ -66,7 +70,9 @@ Two targeted fixes addressed that overhead without expanding the v1 design: tupl
 
 ## Install/Usage
 
-Setu is organized as an npm workspace:
+**Prerequisites**: Node.js >= 24
+
+Causeway is organized as an npm workspace:
 
 ```text
 packages/core          CRDT, SQLite storage, delta encoding, transport client
@@ -111,3 +117,7 @@ The package code and local tests are cross-platform. The full netem-throttled co
 ## Resources/Credits
 
 Causeway's delta-state CRDT direction is informed by the DSON paper. RxDB and Yjs are used as comparison benchmarks through their public packages and repositories; their code is not copied into Causeway.
+
+## License
+
+MIT
